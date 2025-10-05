@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Jellyfin.Plugin.AniFin</AssemblyName>
+    <RootNamespace>Jellyfin.Plugin.AniFin</RootNamespace>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Jellyfin Dependencies -->
+    <PackageReference Include="Jellyfin.Controller" Version="10.*" />
+    <PackageReference Include="Jellyfin.Model" Version="10.*" />
+    
+    <!-- Unsere Dependencies -->
+    <PackageReference Include="AngleSharp" Version="1.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- HTML als Embedded Resource -->
+    <EmbeddedResource Include="Configuration\configPage.html" />
+  </ItemGroup>
+</Project>
