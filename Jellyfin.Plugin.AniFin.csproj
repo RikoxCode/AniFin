@@ -1,23 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>Jellyfin.Plugin.AniFin</AssemblyName>
-    <RootNamespace>Jellyfin.Plugin.AniFin</RootNamespace>
+    <AssemblyName>Jellyfin.Plugin.AniFin.test</AssemblyName>
+    <RootNamespace>Jellyfin.Plugin.AniFin.test</RootNamespace>
     <EnableDynamicLoading>true</EnableDynamicLoading>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Jellyfin Dependencies -->
     <PackageReference Include="Jellyfin.Controller" Version="10.*" />
     <PackageReference Include="Jellyfin.Model" Version="10.*" />
-    
-    <!-- Unsere Dependencies -->
-    <PackageReference Include="AngleSharp" Version="1.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- HTML als Embedded Resource -->
-    <EmbeddedResource Include="Configuration\configPage.html" />
+    <!-- Config page als embedded resources -->
+    <EmbeddedResource Include="Web\anifin.html" />
+    <EmbeddedResource Include="Web\anifin.js" />
+
+    <!-- Extension zip einbetten (optional) -->
+    <None Include="anifin-extension.zip" CopyToOutputDirectory="PreserveNewest" Condition="Exists('anifin-extension.zip')" />
   </ItemGroup>
+
 </Project>

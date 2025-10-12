@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>AniFin</title>
+</head>
+<body>
+<div id="aniFinConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox"  data-controller="__plugin/anifinjs">
+    <div data-role="content">
+        <div class="content-primary">
+
+            <!-- Header -->
+            <div class="verticalSection">
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle">AniFin - Anime Downloader</h2>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="verticalSection">
+                <div is="emby-tabs" class="embyTabsContainer">
+                    <div class="embyTabsBar">
+                        <button is="emby-button" class="embyTabButton embyTabButton-active" data-tab="settings">
+                            <span>Einstellungen</span>
+                        </button>
+                        <button is="emby-button" class="embyTabButton" data-tab="download">
+                            <span>Download starten</span>
+                        </button>
+                        <button is="emby-button" class="embyTabButton" data-tab="queue">
+                            <span>Download-Queue</span>
+                        </button>
+                        <button is="emby-button" class="embyTabButton" data-tab="extension">
+                            <span>Browser-Extension</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tabContent" style="display: block;">
+                <form id="aniFinConfigForm">
+                    <div class="verticalSection">
+                        <h3 class="sectionTitle">Download-Einstellungen</h3>
+
+                        <!-- Download Path -->
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="downloadPath" label="Download-Pfad" />
+                            <div class="fieldDescription">Verzeichnis, in dem die heruntergeladenen Anime gespeichert werden</div>
+                        </div>
+
+                        <!-- Preferred Language -->
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="preferredLanguage">Bevorzugte Sprache</label>
+                            <select is="emby-select" id="preferredLanguage" name="preferredLanguage" class="emby-select">
+                                <!-- Wird dynamisch gefüllt -->
+                            </select>
+                            <div class="fieldDescription">Standardsprache für Downloads</div>
+                        </div>
+
+                        <!-- Preferred Provider -->
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="preferredProvider">Bevorzugter Provider</label>
+                            <select is="emby-select" id="preferredProvider" name="preferredProvider" class="emby-select">
+                                <!-- Wird dynamisch gefüllt -->
+                            </select>
+                            <div class="fieldDescription">Video-Hoster für Downloads</div>
+                        </div>
+
+                        <!-- Max Concurrent Downloads -->
+                        <div class="inputContainer">
+                            <input is="emby-input" type="number" id="maxConcurrentDownloads" label="Max. gleichzeitige Downloads" min="1" max="10" />
+                            <div class="fieldDescription">Maximale Anzahl gleichzeitiger Downloads (1-10)</div>
+                        </div>
+
+                        <!-- Read-only Info -->
+                        <div style="background: rgba(0,164,220,0.1); padding: 15px; border-radius: 6px; margin-top: 20px;">
+                            <h4 style="margin-top: 0;">ℹ️ System-Informationen</h4>
+                            <div class="fieldDescription">Auto-Process Queue: <strong id="autoProcessStatus">Aktiviert</strong></div>
+                            <div class="fieldDescription" style="margin-top: 5px;">Verfügbare Sprachen: <strong id="availableLanguages">-</strong></div>
+                            <div class="fieldDescription" style="margin-top: 5px;">Verfügbare Provider: <strong id="availableProviders">-</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="verticalSection">
+                        <button is="emby-button" type="submit" class="raised button-submit block">
+                            <span>Speichern</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Download Tab -->
+            <div id="downloadTab" class="tabContent hide">
+                <div class="verticalSection">
+                    <h3 class="sectionTitle">Download per URL starten</h3>
+
+                    <form id="downloadUrlForm">
+                        <!-- URL Input -->
+                        <div class="inputContainer">
+                            <input is="emby-input" type="text" id="downloadUrl" label="AniWorld URL" placeholder="https://aniworld.to/anime/stream/..." />
+                            <div class="fieldDescription">Gib die vollständige URL ein (Serie, Staffel oder Episode)</div>
+                        </div>
+
+                        <!-- Language Select -->
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="downloadLanguage">Sprache</label>
+                            <select is="emby-select" id="downloadLanguage" name="downloadLanguage" class="emby-select">
+                                <option value="">Standard verwenden</option>
+                                <!-- Wird dynamisch mit availableLanguages gefüllt -->
+                            </select>
+                            <div class="fieldDescription">Leer lassen für Standardsprache aus den Einstellungen</div>
+                        </div>
+
+                        <!-- Provider Select -->
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="downloadProvider">Provider</label>
+                            <select is="emby-select" id="downloadProvider" name="downloadProvider" class="emby-select">
+                                <option value="">Standard verwenden</option>
+                                <!-- Wird dynamisch mit availableProviders gefüllt -->
+                            </select>
+                            <div class="fieldDescription">Leer lassen für Standard-Provider aus den Einstellungen</div>
+                        </div>
+
+                        <!-- Specials Checkbox -->
+                        <div class="checkboxContainer" style="margin-top: 15px;">
+                            <label>
+                                <input is="emby-checkbox" type="checkbox" id="downloadSpecials" />
+                                <span>Specials/Filme mit herunterladen</span>
+                            </label>
+                            <div class="fieldDescription">Lädt zusätzlich alle Filme und Specials herunter (nur bei Series-URL)</div>
+                        </div>
+
+                        <!-- URL Type Info -->
+                        <div id="urlTypeInfo" style="background: rgba(0,164,220,0.1); padding: 15px; border-radius: 6px; margin-top: 15px; display: none;">
+                            <h4 style="margin-top: 0;">📋 Erkannter URL-Typ</h4>
+                            <div id="urlTypeText" class="fieldDescription"></div>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <button is="emby-button" type="submit" class="raised button-submit block">
+                                <span>Zur Queue hinzufügen</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Queue Tab -->
+            <div id="queueTab" class="tabContent hide">
+                <div class="verticalSection">
+                    <div class="sectionTitleContainer flex align-items-center" style="margin-bottom: 1em;">
+                        <h3 class="sectionTitle" style="flex: 1;">Download-Queue</h3>
+                        <button is="emby-button" id="refreshQueueBtn" class="raised">
+                            <span>Aktualisieren</span>
+                        </button>
+                        <button is="emby-button" id="pauseQueueBtn" class="raised" style="margin-left: 10px;">
+                            <span id="pauseQueueText">Pausieren</span>
+                        </button>
+                        <button is="emby-button" id="clearQueueBtn" class="raised button-cancel" style="margin-left: 10px;">
+                            <span>Alle löschen</span>
+                        </button>
+                    </div>
+
+                    <!-- Queue Statistics -->
+                    <div id="queueStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: rgba(0,164,220,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #00a4dc;">
+                            <div class="fieldDescription">Gesamt</div>
+                            <h2 id="statTotal" style="margin: 5px 0 0 0;">0</h2>
+                        </div>
+                        <div style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                            <div class="fieldDescription">Ausstehend</div>
+                            <h2 id="statPending" style="margin: 5px 0 0 0;">0</h2>
+                        </div>
+                        <div style="background: rgba(76,175,80,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                            <div class="fieldDescription">Abgeschlossen</div>
+                            <h2 id="statCompleted" style="margin: 5px 0 0 0;">0</h2>
+                        </div>
+                        <div style="background: rgba(244,67,54,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #f44336;">
+                            <div class="fieldDescription">Fehlgeschlagen</div>
+                            <h2 id="statFailed" style="margin: 5px 0 0 0;">0</h2>
+                        </div>
+                    </div>
+
+                    <!-- Current Download -->
+                    <div id="currentDownload" style="margin-bottom: 20px;"></div>
+
+                    <!-- Download History -->
+                    <h3 class="sectionTitle">Verlauf</h3>
+                    <div id="downloadQueue"></div>
+                </div>
+            </div>
+
+            <!-- Extension Tab -->
+            <div id="extensionTab" class="tabContent hide">
+                <div class="verticalSection">
+                    <h3 class="sectionTitle">Browser-Extension</h3>
+                    <p class="fieldDescription">Installiere die Browser-Extension, um Anime direkt von AniWorld zu deiner Jellyfin Download-Queue hinzuzufügen.</p>
+
+                    <!-- Extension Status Card -->
+                    <div id="extensionStatusCard" style="background: rgba(0,164,220,0.1); padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <h4 style="margin: 0 0 10px 0;">📦 AniFin Browser Extension</h4>
+                                <div class="fieldDescription">Version: <strong id="extVersion">-</strong></div>
+                                <div class="fieldDescription" style="margin-top: 5px;">Status: <strong id="extStatus">Lädt...</strong></div>
+                                <div class="fieldDescription" style="margin-top: 5px;">Dateigröße: <strong id="extSize">-</strong></div>
+                            </div>
+                            <div>
+                                <button is="emby-button" id="downloadExtensionBtn" class="raised button-submit" style="min-width: 150px;">
+                                    <span>Extension herunterladen</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supported Browsers -->
+                    <div style="margin-top: 20px;">
+                        <h4>🌐 Unterstützte Browser</h4>
+                        <div id="supportedBrowsers" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                    </div>
+
+                    <!-- Installation Instructions -->
+                    <div style="background: rgba(0,164,220,0.1); padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <h4 style="margin-top: 0;">📋 Installations-Anleitung</h4>
+                        <ol id="installInstructions" style="line-height: 1.8;">
+                            <li>Extension herunterladen und entpacken</li>
+                            <li>Browser öffnen (Chrome/Edge/Brave)</li>
+                            <li>Zu <code>chrome://extensions</code> navigieren</li>
+                            <li>"Entwicklermodus" aktivieren</li>
+                            <li>"Entpackte Erweiterung laden" klicken</li>
+                            <li>Entpackten Ordner auswählen</li>
+                            <li>Extension-Icon klicken und Jellyfin-Daten eingeben</li>
+                        </ol>
+                    </div>
+
+                    <!-- Troubleshooting -->
+                    <div style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #ffc107;">
+                        <h4 style="margin-top: 0;">⚠️ Hinweise</h4>
+                        <ul style="line-height: 1.6; margin: 0;">
+                            <li>Die Extension funktioniert nur mit Chromium-basierten Browsern</li>
+                            <li>Firefox wird derzeit nicht unterstützt</li>
+                            <li>Du musst in Jellyfin angemeldet sein, damit die Extension funktioniert</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="configPage.js"></script>
+</body>
+</html>
