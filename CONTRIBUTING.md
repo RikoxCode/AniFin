@@ -39,6 +39,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 - AniWorld CLI installed
 
 ### Building the Plugin
+
 ```bash
 # Clone your fork
 git clone https://github.com/YOUR-USERNAME/AniFin.git
@@ -50,3 +51,79 @@ dotnet build
 # Run tests (if available)
 dotnet test
 ```
+
+### Testing Your Changes
+
+1. Copy the compiled DLL to your Jellyfin plugins directory
+2. Restart Jellyfin
+3. Test your changes thoroughly
+4. Check the logs for any errors
+
+## Style Guidelines
+
+### Git Commit Messages
+
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
+
+Example:
+```
+Add support for batch downloads
+
+- Implement queue system for multiple series
+- Add UI controls for batch operations
+- Update documentation
+
+Fixes #123
+```
+
+### C# Style Guide
+
+- Follow Microsoft's C# Coding Conventions
+- Use meaningful variable and method names
+- Add XML documentation comments to public methods
+- Keep methods focused and small
+- Use async/await for asynchronous operations
+
+### Documentation
+
+- Update the README.md if you change functionality
+- Comment your code where necessary
+- Update API documentation for any endpoint changes
+
+## Project Structure
+
+```
+AniFin/
+├── Jellyfin.Plugin.AniFin/
+│   ├── Api/                  # API Controllers
+│   ├── Configuration/        # Plugin configuration
+│   ├── Modules/             # Core functionality
+│   │   ├── DownloadExecuter.cs
+│   │   └── DownloadQueue.cs
+│   ├── Web/                 # Web interface files
+│   └── Plugin.cs            # Main plugin class
+└── README.md
+```
+
+## Testing
+
+### Manual Testing Checklist
+
+- [ ] Plugin installs correctly
+- [ ] Configuration page loads and saves settings
+- [ ] Downloads can be added to queue
+- [ ] Queue processes downloads correctly
+- [ ] Files are organized properly
+- [ ] Browser extension works (if modified)
+- [ ] Logs are generated correctly
+
+## Questions?
+
+Feel free to open an issue with the label `question` if you have any questions about contributing!
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the same license as the project.
